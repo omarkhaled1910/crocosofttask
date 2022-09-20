@@ -20,8 +20,9 @@ const AddEditQuiz = () => {
   const { quizes, addQuiz, editQuiz } = useQuiz();
   const navigate = useNavigate();
   const [quiz, setQuiz] = React.useState(
-    id ? quizes.find((quiz) => quiz.id === id) : { ...deafultValues }
+    id ? quizes.find((quiz) => quiz.id == id) : { ...deafultValues }
   );
+
   const [addingQuestion, setAddingQuestion] = useState(false);
   console.log(quiz);
   const handleAddQuestion = (question) => {
@@ -80,7 +81,7 @@ const AddEditQuiz = () => {
           <div>
             <TextField
               onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
-              value={quiz.title}
+              value={quiz?.title}
               label="Quiz Title"
               type={"text"}
             ></TextField>
@@ -88,7 +89,7 @@ const AddEditQuiz = () => {
           <div>
             <TextField
               onChange={(e) => setQuiz({ ...quiz, url: e.target.value })}
-              value={quiz.url}
+              value={quiz?.url}
               label="Quiz Url"
               type={"text"}
             ></TextField>
@@ -102,7 +103,7 @@ const AddEditQuiz = () => {
               onChange={(e) =>
                 setQuiz({ ...quiz, description: e.target.value })
               }
-              value={quiz.description}
+              value={quiz?.description}
             />
           </div>
         </div>

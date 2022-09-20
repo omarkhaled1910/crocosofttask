@@ -7,9 +7,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useQuiz } from "../../QuizContext/quizContext";
+import { Navigate, useNavigate } from "react-router-dom";
 const QuizesTable = () => {
   const { quizes } = useQuiz();
-
+  const nanigate = useNavigate();
   return (
     <div style={{ marginTop: "40px" }}>
       <TableContainer
@@ -35,7 +36,12 @@ const QuizesTable = () => {
                 }}
               >
                 {Object.keys(row).map((key, i) => (
-                  <TableCell key={i}>
+                  <TableCell
+                    onClick={() =>
+                      key === "title" && nanigate(`/edit-quiz/${row?.id}`)
+                    }
+                    key={i}
+                  >
                     {Array.isArray(row?.[key])
                       ? row?.[key]?.length
                       : row?.[key]

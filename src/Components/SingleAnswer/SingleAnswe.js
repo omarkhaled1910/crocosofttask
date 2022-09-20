@@ -16,7 +16,7 @@ const SingleAnswer = ({
 
   return (
     <>
-      {answerEdit?.id === ans?.id ? (
+      {answerEdit?.id == ans?.id ? (
         <>
           <div className="flex-center">
             <TextField
@@ -53,7 +53,7 @@ const SingleAnswer = ({
 
           {ans.text}
           {ans.is_true && "(Right Answer)"}
-          {questionHover === ans.id && !answerEdit && (
+          {questionHover == ans.id && !answerEdit && (
             <div
               onMouseEnter={() => setQuestionHover(ans.id.toString())}
               className="flex-center"
