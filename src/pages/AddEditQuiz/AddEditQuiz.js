@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AddingQuestion from "../../Components/AddingQuestion/AddingQuestion";
 import SaceCancel from "../../Components/SaveCancel/SaceCancel";
-import SingleQuiz from "../../Components/SingleQuiz/SingleQuiz";
+import SingleQuestion from "../../Components/SingleQuestion/SingleQuestion";
 import { useQuiz } from "../../QuizContext/quizContext";
 import "./addquiz.css";
 
@@ -123,7 +123,7 @@ const AddEditQuiz = () => {
               />
             )}
             {quiz?.questions?.map((quizdate, i) => (
-              <SingleQuiz
+              <SingleQuestion
                 editAnswer={editAnswer}
                 deleteAnswer={deleteAnswer}
                 key={i}
