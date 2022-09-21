@@ -1,11 +1,5 @@
-import {
-  Add,
-  Cancel,
-  Circle,
-  Edit,
-  ThumbUpAltSharp,
-} from "@mui/icons-material";
-import { TextField } from "@mui/material";
+import { Add, ThumbUpAltSharp } from "@mui/icons-material";
+import { Dialog, TextField } from "@mui/material";
 import React, { useState } from "react";
 import SaceCancel from "../SaveCancel/SaceCancel";
 import { v4 as uuidv4 } from "uuid";
@@ -14,7 +8,14 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { toast } from "react-toastify";
 import SingleAnswer from "../SingleAnswer/SingleAnswe";
-const AddingQuestion = ({ setAddingQuestion, handleAddQuestion }) => {
+import DialogTitle from "@mui/material/DialogTitle";
+import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
+
+const AddingQuestion = ({
+  setAddingQuestion,
+  handleAddQuestion,
+  addingQuestion,
+}) => {
   const [addAnswer, setAddAnswer] = useState(false);
   const [question, setQuestion] = useState({
     text: "",
@@ -25,28 +26,47 @@ const AddingQuestion = ({ setAddingQuestion, handleAddQuestion }) => {
   const [answers, setAnswers] = useState([]);
   const [rightAns, setRightAns] = useState(false);
   const [questionHover, setQuestionHover] = useState("");
-  const [answerEdit, setAnswerEdit] = useState(null);
+
+  const isThereEaxctlyOneAnswer = () =>
+    answers.find((ans) => ans.is_true) ? true : false;
+
+  const handleEditAnswerSubmit = (answer) =>
+    setAnswers(answers.map((ans) => (ans.id === answer.id ? answer : ans)));
+
+  const handleDeleteAnswer = (id) =>
+    setAnswers(answers.filter((ans) => ans.id !== id));
+
   const handleSubmit = () => {
-    if (answers.length < 2) {
+    if (answers.length < 2 || !question?.text) {
       toast.error("atleast two answers have to exist");
+      return;
+    }
+    if (!isThereEaxctlyOneAnswer()) {
+      toast.error("one of the answers have to be coorect !");
       return;
     }
     handleAddQuestion({ id: uuidv4(), answers: answers, ...question });
     setAddingQuestion(false);
   };
-  const handleEditAnswerSubmit = (answer) => {
-    setAnswers(answers.map((ans) => (ans.id === answer.id ? answer : ans)));
-  };
-  const handleDeleteAnswer = (id) =>
-    setAnswers(answers.filter((ans) => ans.id !== id));
   return (
-    <div style={{ borderBottom: "2px solid black", marginBottom: "20px" }}>
-      <div className="flex-center">
+    <Dialog
+      className="dialouge_container"
+      onClose={() => setAddingQuestion(false)}
+      open={addingQuestion}
+    >
+      <DialogTitle className="dialougeHeader">
+        <div>Add a new Question</div>
+        <SaceCancel
+          savefn={handleSubmit}
+          cancelfn={() => setAddingQuestion(false)}
+        />
+      </DialogTitle>
+
+      <div style={{ borderBottom: "2px solid black", marginBottom: "20px" }}>
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            width: "100%",
             gap: "20px",
           }}
         >
@@ -55,7 +75,6 @@ const AddingQuestion = ({ setAddingQuestion, handleAddQuestion }) => {
             onChange={(e) => setQuestion({ ...question, text: e.target.value })}
             type={"text"}
             label="Question"
-            fullWidth
           />
           <TextField
             value={question.feedback_true}
@@ -63,7 +82,7 @@ const AddingQuestion = ({ setAddingQuestion, handleAddQuestion }) => {
               setQuestion({ ...question, feedback_true: e.target.value })
             }
             type={"text"}
-            label="Right FeedBack"
+            label="Correct FeedBack"
             fullWidth
           />
           <TextField
@@ -76,81 +95,78 @@ const AddingQuestion = ({ setAddingQuestion, handleAddQuestion }) => {
             fullWidth
           />
         </div>
-        <SaceCancel
-          savefn={handleSubmit}
-          cancelfn={() => setAddingQuestion(false)}
-        />
-      </div>
-      <br />
-      {!addAnswer && (
-        <div
-          className="flex-center"
-          onClick={() => question && setAddAnswer(true)}
-        >
-          Add Answer
-          <span>
-            <Add />
-          </span>
-        </div>
-      )}
-      {addAnswer && (
-        <div className="flex-center">
-          <TextField
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            type={"text"}
-            label="Answer"
-            fullWidth
-          />
 
-          <FormGroup style={{ margin: "20px" }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  value={rightAns ? true : false}
-                  onChange={() => setRightAns(!rightAns)}
-                  disabled={answers?.find((ans) => ans?.is_true)}
-                />
-              }
-              label={<ThumbUpAltSharp />}
-            />
-          </FormGroup>
-          <SaceCancel
-            savefn={() => {
-              setAnswers([
-                ...answers,
-                { text: answer, id: uuidv4(), is_true: rightAns },
-              ]);
-              setAddAnswer(false);
-              setAnswer("");
-              setRightAns(false);
-            }}
-            cancelfn={() => setAddAnswer(false)}
-          />
-        </div>
-      )}
-      <div onMouseLeave={() => setQuestionHover("")}>
-        {answers?.map((ans, i) => (
+        <br />
+        {!addAnswer && (
           <div
-            style={{ justifyContent: "flex-start", gap: "50px" }}
             className="flex-center"
-            key={i}
+            onClick={() => question && setAddAnswer(true)}
           >
+            Add Answer
+            <span>
+              <Add />
+            </span>
+          </div>
+        )}
+        {addAnswer && (
+          <div className="flex-center">
+            <TextField
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              type={"text"}
+              label="Answer"
+              fullWidth
+            />
+
+            <FormGroup style={{ margin: "20px" }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    value={rightAns ? true : false}
+                    onChange={() => setRightAns(!rightAns)}
+                    disabled={answers?.find((ans) => ans?.is_true)}
+                  />
+                }
+                label={<DoneAllOutlinedIcon />}
+              />
+            </FormGroup>
+            <SaceCancel
+              savefn={() => {
+                setAnswers([
+                  ...answers,
+                  { text: answer, id: uuidv4(), is_true: rightAns },
+                ]);
+                setAddAnswer(false);
+                setAnswer("");
+                setRightAns(false);
+              }}
+              cancelfn={() => setAddAnswer(false)}
+            />
+          </div>
+        )}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+          onMouseLeave={() => setQuestionHover("")}
+        >
+          {answers?.map((ans, i) => (
             <SingleAnswer
-              setAnswerEdit={setAnswerEdit}
               i={i}
               ans={ans}
               setQuestionHover={setQuestionHover}
               questionHover={questionHover}
-              answerEdit={answerEdit}
               handleDeleteAnswer={handleDeleteAnswer}
               handleEditAnswerSubmit={handleEditAnswerSubmit}
+              key={i}
             />
-          </div>
-        ))}
+          ))}
+        </div>
+        <br />
       </div>
-      <br />
-    </div>
+    </Dialog>
   );
 };
 

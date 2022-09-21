@@ -7,7 +7,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useQuiz } from "../../QuizContext/quizContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 const QuizesTable = () => {
   const { quizes } = useQuiz();
   const nanigate = useNavigate();

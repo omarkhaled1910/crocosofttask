@@ -37,22 +37,26 @@ const SingleAnswer = ({
           </div>
         </>
       ) : (
-        <div
-          className="flex-center"
-          key={i}
-          onMouseEnter={() => setQuestionHover(ans.id.toString())}
-          style={{
-            width: "80%",
-            justifyContent: "flex-start",
-            gap: "20px",
-          }}
-        >
-          <span>
-            <Circle />
-          </span>
+        <div style={{ display: "flex" }}>
+          <div
+            key={i}
+            onMouseEnter={() => setQuestionHover(ans.id.toString())}
+            style={{
+              minWidth: "250px",
+              gap: "10px",
+              height: "50px",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <span>
+              <Circle />
+            </span>
 
-          {ans.text}
-          {ans.is_true && "(Right Answer)"}
+            {ans.text}
+            {ans.is_true && "(Right Answer)"}
+          </div>
+
           {questionHover == ans.id && !answerEdit && (
             <div
               onMouseEnter={() => setQuestionHover(ans.id.toString())}

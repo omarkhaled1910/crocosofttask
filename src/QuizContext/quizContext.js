@@ -22,7 +22,10 @@ export const QuizProvider = ({ children }) => {
     ]);
   };
   const editQuiz = (quiz) => {
-    setQuizes([...quizes, { ...quiz, modified: new Date().toDateString() }]);
+    setQuizes([
+      ...quizes.filter((qz) => qz.id !== quiz.id),
+      { ...quiz, modified: new Date().toDateString() },
+    ]);
   };
   const values = useMemo(
     () => ({

@@ -1,7 +1,8 @@
 import { Add } from "@mui/icons-material";
-import { TextareaAutosize, TextField } from "@mui/material";
+import { Button, TextareaAutosize, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import AddingQuestion from "../../Components/AddingQuestion/AddingQuestion";
 import SaceCancel from "../../Components/SaveCancel/SaceCancel";
 import SingleQuestion from "../../Components/SingleQuestion/SingleQuestion";
@@ -24,7 +25,6 @@ const AddEditQuiz = () => {
   );
 
   const [addingQuestion, setAddingQuestion] = useState(false);
-  console.log(quiz);
   const handleAddQuestion = (question) => {
     setQuiz({
       ...quiz,
@@ -68,7 +68,14 @@ const AddEditQuiz = () => {
         <h3> {id ? "Edit Quiz" : "Add Quiz"}</h3>
         <SaceCancel
           savefn={() => {
-            if (!quiz.questions.length || !quiz.title) return;
+            if (!quiz.questions.length || !quiz.title) {
+              toast.error(
+                !quiz.title
+                  ? "you have to enter a title"
+                  : "you have to add a question"
+              );
+              return;
+            }
             id ? editQuiz(quiz) : addQuiz(quiz);
             navigate("/");
           }}
@@ -78,28 +85,30 @@ const AddEditQuiz = () => {
       <div className="quizforumContaine">
         <div className="quizinfocontainer">
           <h3>Quiz Info</h3>
-          <div>
+          <div className="medium-width">
             <TextField
               onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
               value={quiz?.title}
               label="Quiz Title"
               type={"text"}
+              fullWidth
             ></TextField>
           </div>
-          <div>
+          <div className="medium-width">
             <TextField
               onChange={(e) => setQuiz({ ...quiz, url: e.target.value })}
               value={quiz?.url}
               label="Quiz Url"
               type={"text"}
+              fullWidth
             ></TextField>
           </div>
-          <div>
+          <div className="medium-width">
             <TextareaAutosize
               aria-label="minimum height"
               minRows={5}
               placeholder="Quiz Descrioption goes here"
-              style={{ width: 220 }}
+              style={{ width: "100% " }}
               onChange={(e) =>
                 setQuiz({ ...quiz, description: e.target.value })
               }
@@ -109,17 +118,27 @@ const AddEditQuiz = () => {
         </div>
         <div className="quizquestionscontainer">
           <h3>Questions</h3>
-          <div onClick={() => setAddingQuestion(true)} className="flex-center">
+          <Button
+            style={{
+              cursor: "pointer",
+              width: "200px",
+              textAlign: "center",
+              marginBottom: "10px",
+            }}
+            onClick={() => setAddingQuestion(true)}
+            className="flex-center "
+          >
             Add New Question
-            <span style={{ cursor: "pointer" }}>
+            <span>
               <Add />
             </span>
-          </div>
+          </Button>
           <div className="questions-container">
             {addingQuestion && (
               <AddingQuestion
                 handleAddQuestion={handleAddQuestion}
                 setAddingQuestion={setAddingQuestion}
+                addingQuestion={addingQuestion}
               />
             )}
             {quiz?.questions?.map((quizdate, i) => (
